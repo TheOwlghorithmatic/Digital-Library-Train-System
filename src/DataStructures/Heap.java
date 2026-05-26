@@ -28,33 +28,33 @@ public class Heap {
         return heap.get(a) < heap.get(b);
     }
 
-    private int parent(int i) { 
+    private Integer parent(Integer i) { 
         return (i - 1) / 2;
     }
-    private int leftChild(int i) { 
+    private Integer leftChild(Integer i) { 
         return (2 * i) + 1; 
     }
-    private int rightChild(int i) { 
+    private Integer rightChild(Integer i) { 
         return (2 * i) + 2; 
     }
 
-    private void swap(int i, int j) {
+    private void swap(Integer i, Integer j) {
         Integer temp = heap.get(i);
         heap.set(i, heap.get(j));
         heap.set(j, temp);
     }
 
-    private void heapifyUp(int i) {
+    private void heapifyUp(Integer i) {
         while (i != 0 && compare(i, parent(i))) {
             swap(i, parent(i));
             i = parent(i);
         }
     }
 
-    private void heapifyDown(int i) {
-        int largest = i;
-        int left = leftChild(i);
-        int right = rightChild(i);
+    private void heapifyDown(Integer i) {
+        Integer largest = i;
+        Integer left = leftChild(i);
+        Integer right = rightChild(i);
 
         if (left < heap.size() && compare(left, largest)) {
             largest = left;
