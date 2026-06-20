@@ -14,6 +14,7 @@ public class Graph {
     String[] names;
 
     public Graph() {
+        this.visited = new boolean[14];
         this.names = new String[14];
         this.adj = new int[14][14];
         for(int i=0;i<14;i++) {
@@ -42,16 +43,18 @@ public class Graph {
 
     void add(int u, int v, int weight) {
         adj[u][v] = weight;
+        adj[v][u] = weight;
         stations[u].degree++;
+        stations[v].degree++;
     }
 
-    int shortestPathBetween(Station source, Station target) {
+    int shortestPathBetween(int source, int target) {
         int[] dist = new int[14];
         Arrays.fill(dist, Integer.MAX_VALUE);
-        dist[source.id] = 0;
+        dist[source] = 0;
         
         Heap pq = new Heap(false);
-        pq.push(source.id, 0);
+        pq.push(source, 0);
         
         Arrays.fill(visited, false);
         
@@ -72,19 +75,20 @@ public class Graph {
             }
         }
         
-        return dist[target.id];
+        return dist[target];
     }
 
     private boolean cycleDetection(int i, int p) {
         visited[i] = true;
         boolean res = false;
         for(int node=0;node<14;node++) {
+            if(adj[i][node] == -1) continue;
             if(node == i) continue;
             if(visited[node] && node != p) {
                 return true;
             }
-            if(visited[node]) continue;
-            res |= cycleDetection(node, i);
+            if(!visited[node])
+                res |= cycleDetection(node, i);
         }
         return res;
     }
