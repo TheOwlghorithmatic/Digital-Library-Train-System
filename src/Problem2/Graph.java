@@ -8,12 +8,14 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class Graph {
-    Station[] stations;
-    int[][] adj;
-    boolean[] visited;
-    String[] names;
+    private Station[] stations;
+    private int[][] adj;
+    private boolean[] visited;
+    private String[] names;
+    private Map <String, Integer> index;
 
     public Graph() {
+        this.index = new HashMap<>();
         this.visited = new boolean[14];
         this.names = new String[14];
         this.adj = new int[14][14];
@@ -32,6 +34,7 @@ public class Graph {
                 String city = scanner.nextLine();
                 stations[i] = new Station(city);
                 names[i] = city;
+                index.put(city, i);
                 i++;
             }
             scanner.close();
@@ -41,16 +44,21 @@ public class Graph {
         }
     }
 
-    void add(int u, int v, int weight) {
+    void add(String from, String to, int weight) {
+        int u = index.get(from), v = index.get(to);
         adj[u][v] = weight;
         adj[v][u] = weight;
         stations[u].degree++;
         stations[v].degree++;
     }
 
-    int shortestPathBetween(int source, int target) {
+    int[] getShortestPath(String beg, String end) {
+        int source = index.get(beg);
+        int target = index.get(end);
+        int[] parent = new int[14];
         int[] dist = new int[14];
         Arrays.fill(dist, Integer.MAX_VALUE);
+        Arrays.fill(parent, -1);
         dist[source] = 0;
         
         Heap pq = new Heap(false);
@@ -58,24 +66,42 @@ public class Graph {
         
         Arrays.fill(visited, false);
         
-        while (!pq.isEmpty()) {
+        while(!pq.isEmpty()) {
             Pair curr = pq.pop();
             int u = curr.a;
             
-            if (visited[u]) continue;
+            if(visited[u]) continue;
             visited[u] = true;
             
-            for (int v=0;v<14;v++) {
+            for(int v=0;v<14;v++) {
                 int weight = adj[u][v];
                 if(weight == -1 || u == v) continue;
-                if (!visited[v] && dist[u] + weight < dist[v]) {
+                if(!visited[v] && dist[u] + weight < dist[v]) {
                     dist[v] = dist[u] + weight;
+                    parent[v] = u;
                     pq.push(v, dist[v]);
                 }
             }
         }
+        if(dist[target] == Integer.MAX_VALUE) {
+            return new int[0];
+        }
         
-        return (dist[target] == Integer.MAX_VALUE ? -1 : dist[target]);
+        int count = 0;
+        int curr = target;
+        while(curr != -1) {
+            count++;
+            curr = parent[curr];
+        }
+        
+        int[] path = new int[count];
+        curr = target;
+        for(int i = count - 1; i >= 0; i--) {
+            path[i] = curr;
+            curr = parent[curr];
+        }
+        
+        return path;
     }
 
     private boolean cycleDetection(int i, int p) {
@@ -103,7 +129,7 @@ public class Graph {
         return res;
     }
 
-    void sort() {
+    String sort() {
         Heap pq = new Heap(true);
         for(int i=0;i<14;i++) {
             pq.push(i, stations[i].degree);
@@ -115,29 +141,26 @@ public class Graph {
             newStations[i] = stations[x];
             newAdj[i] = adj[x];
         }
-        adj = newAdj;
-        stations = newStations;
+        return export(newAdj);
     }
 
-    String[] export() {
-        String[] result = new String[14];
-        
+    String export(int[][] mat) {
+        StringBuilder sb = new StringBuilder();
         for(int i=0;i<14;i++) {
-            StringBuilder sb = new StringBuilder();
             sb.append(names[i]).append(" -> ");
             
-            if (adj[i].length == 0) {
+            if (mat[i].length == 0) {
                 sb.append("(no edges)");
             } else {
                 int cnt = 0;
                 int total = 0;
                 for(int j=0;j<14;j++) {
-                    if(adj[i][j] > -1) {
+                    if(mat[i][j] > -1) {
                         total++;
                     }
                 }
                 for(int j=0;j<14;j++) {
-                    int e = adj[i][j];
+                    int e = mat[i][j];
                     if(e == -1 || i == j) continue;
                     cnt++;
                     sb.append(names[j])
@@ -150,14 +173,14 @@ public class Graph {
                     }
                 }
             }
-            
-            result[i] = sb.toString();
+            sb.append("\n");            
         }
         
-        return result;
+        return sb.toString();
     }
 
-    int[][] importGraph(String[] lines) {
+    int[][] importGraph(String input) {
+        String[] lines = input.split("\n");
         Map<String, Integer> nameToIndex = new HashMap<>();
         for(int i=0;i<14;i++) {
             nameToIndex.put(names[i], i);
@@ -197,6 +220,14 @@ public class Graph {
         }
         
         return newAdj;
+    }
+
+    public String[] getStationNames() {
+        return this.names;
+    }
+
+    public int[][] getAdj() {
+        return this.adj;
     }
 
 }
