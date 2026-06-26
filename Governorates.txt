@@ -1,14 +1,14 @@
 Damascus
-Rif Dimashq
 Aleppo
 Homs
 Hama
 Latakia
 Tartus
-Idlib
-Raqqa
-Deir ez-Zor
+Deir_ez-Zor
 Al-Hasakah
-Daraa
+Ar-Raqqah
+Idlib
 As-Suwayda
+Daraa
 Quneitra
+Rif_Dimashq
