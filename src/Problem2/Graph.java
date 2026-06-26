@@ -218,7 +218,7 @@ public class Graph {
                 newAdj[sourceIndex][destIndex] = weight;
             }
         }
-        
+        adj = newAdj;
         return newAdj;
     }
 
