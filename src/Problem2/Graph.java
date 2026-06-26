@@ -75,7 +75,7 @@ public class Graph {
             }
         }
         
-        return dist[target];
+        return (dist[target] == Integer.MAX_VALUE ? -1 : dist[target]);
     }
 
     private boolean cycleDetection(int i, int p) {
