@@ -135,10 +135,8 @@ public class Graph {
             pq.push(i, stations[i].degree);
         }
         int[][] newAdj = new int[14][14];
-        Station[] newStations = new Station[14];
         for(int i=0;i<14;i++) {
             int x = pq.pop().a;
-            newStations[i] = stations[x];
             newAdj[i] = adj[x];
         }
         return export(newAdj);
