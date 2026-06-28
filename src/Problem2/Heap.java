@@ -2,7 +2,6 @@ package Problem2;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 public class Heap {
     private List<Pair> heap;
@@ -67,13 +66,12 @@ public class Heap {
         }
     }
 
-    public void push(int node, int weight) {
-        heap.add(new Pair(node, weight));
+    public void push(int a, int b) {
+        heap.add(new Pair(a, b));
         heapifyUp(heap.size() - 1);
     }
 
-    public Pair pop() throws NoSuchElementException {
-        if (heap.isEmpty()) throw new NoSuchElementException();
+    public Pair pop() {
         if (heap.size() == 1) return heap.remove(heap.size() - 1);
 
         Pair rootNode = heap.get(0);
